@@ -1,0 +1,119 @@
+#!/usr/bin/env bash
+
+#============================================|
+#	Downloads youtube audio
+#	created by: Joao Mauricio
+#	github: github.com/jean0t
+#	version: 1.3
+#============================================|
+#	Changelog
+#
+#	1.0:
+#		- Downloads and extracts audios
+#		  from youtube videos
+#
+#	1.1:
+#		- Test if there are links
+#		  to download
+#
+#	1.2:
+#		- Test if the link passed is
+#		  a valid youtube link
+#
+#	1.3:
+#		- More organized code with
+#		  functions and a menu to
+#		  interact with the user.
+#
+#		- Now provides info about
+#		  the app with parameters
+#
+#		fixed:
+#			- download of multiple
+#			  songs in a playlist
+#			  without explicit allowing. 
+#============================================|
+
+# VERIFICATIONS
+
+# Do not allow root to run
+[[ "$UID" -eq '0' ]] && { echo 'Do not run as root' ; exit 1 ; }
+
+# test if the necessary module exist
+[[ $( type -p yt-dlp ) ]] || { echo 'yt-dlp not found.' ; exit 1 ; }
+
+# Test internet conection
+[[ $( ping -c1 8.8.8.8 ) ]] || { echo 'You need internet conection to run the script' ; exit 1 ; }
+
+# test if the directory exists
+[[ ! -e "$HOME/Downloads/Youtube_Download" ]] \
+&& { echo 'created directory ~Downloads/Youtube_Download' ; mkdir -p "$HOME/Downloads/Youtube_Download" ; }
+
+#============================================| GLOBAL VARIABLES
+
+version='1.3'
+output_directory="$HOME/Downloads/Youtube_Download/%(title)s.%(ext)s"
+
+#============================================| FUNCTIONS
+
+function version() {
+	echo "version ${version}"
+}
+
+function help() {
+	cat <<'EOF'
+usage: ./yt_download [OPTIONS] LINK
+
+	OPTIONS:
+		-a|--audio	Downloads the audio of the video
+
+		-h|--help 	Gets info about the software
+
+		-v|--version	Gets the current version
+
+
+	REASON OF COMMON ISSUES:
+		- Absence of ffmpeg on the system
+		- Absence of the module mutagen
+EOF
+}
+
+function download_audio() {
+
+	# test if there are parameters
+	[[ $# -eq 0 ]] && { echo 'you need to pass an youtube link to download' ; exit 1 ; }
+
+	# test if the link is valid
+	local youtube_regex='^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+$'
+	[[ $1 =~ $youtube_regex ]] || { echo 'It is not a valid link, please provide a https://youtube.com/...' ; exit 1 ; }
+
+
+	echo 'Starting the download...'
+	if yt-dlp -x -f bestaudio -o "$output_directory" --embed-thumbnail --no-playlist "$@" >&- 2>&- ; then
+		echo 'Download was successful, saved in:'
+		echo "$HOME/Downloads/Youtube_Download"
+		exit 0
+	else
+		echo $'\E[31;1mAn error has occurred.\E[0m\nUse -h or --help to know more.'
+		exit 1
+	fi
+}
+
+#============================================|START THE PROGRAM
+
+
+case "$1" in
+	-a|--audio)
+		shift
+		download_audio "$1"
+		;;
+
+	-v|--version)
+		version
+		;;
+
+	-h|--help|*)
+		help
+		;;
+
+esac
