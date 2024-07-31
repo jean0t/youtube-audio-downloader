@@ -1,5 +1,4 @@
-<h1 style='text-align: center;'>Youtube Downloader</h1>
-<h1 style='text-align: center'>--------------------------</h1>
+# Youtube Downloader
 
 
 ## Goal of the project
