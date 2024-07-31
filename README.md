@@ -16,7 +16,7 @@
 ## Modules required
  - Ffmpeg & Ffprobe
  - Python3 and Mutagen module
- - yt-dlp installed
+ - yt-dlp
 
 
 ## Instalation
