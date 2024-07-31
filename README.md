@@ -32,4 +32,5 @@ To download the audio of the video, you can also use `-h` to access help for mor
 
 
 ## TO DO
-- Allow batch download from a playlist
+- [ ]  Batch download from a playlist
+- [ ]  Download video
