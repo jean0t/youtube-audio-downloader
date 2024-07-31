@@ -21,14 +21,22 @@
 
 ## Instalation
  Git clone this repository and allow execution to the file `yt_download`  
- which is the script that you will run.
-*OBS: see if the modules requirement are fulfilled*
+ ```sh
+$ git clone git@github.com:jean0t/youtube-audio-downloader.git
+$ cd youtube-audio-downloader
+$ chmod +x yt_download
+```
+ which is the script that you will run.  
+*OBS: see if the modules requirement are fulfilled*  
+*OBS²: add a symbolic link to your path, so you can call the script anytime you want*
 
 ## Usage
+
+To download the audio of a video:
 ```
 ./yt_download -a [youtube link]
 ```
-To download the audio of the video, you can also use `-h` to access help for more information.
+you can also use `-h` to access help for more information.
 
 
 ## TO DO
