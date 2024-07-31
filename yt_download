@@ -32,6 +32,10 @@
 #			- download of multiple
 #			  songs in a playlist
 #			  without explicit allowing. 
+#
+#	1.4:
+#		- Added support to download audio
+#		  from a playlist.
 #============================================|
 
 # VERIFICATIONS
@@ -65,11 +69,13 @@ function help() {
 usage: ./yt_download [OPTIONS] LINK
 
 	OPTIONS:
-		-a|--audio	Downloads the audio of the video
+		-a|--audio		Downloads the audio of the video
 
-		-h|--help 	Gets info about the software
+		-pa|--playlist-audio	Downloads the audio of all videos in a playlist
 
-		-v|--version	Gets the current version
+		-h|--help 		Gets info about the software
+
+		-v|--version		Gets the current version
 
 
 	REASON OF COMMON ISSUES:
@@ -78,6 +84,8 @@ usage: ./yt_download [OPTIONS] LINK
 EOF
 }
 
+# accepts 2 parameters, first is the link, second is the confirmation if it will 
+# download the playlist or not
 function download_audio() {
 
 	# test if there are parameters
@@ -89,7 +97,7 @@ function download_audio() {
 
 
 	echo 'Starting the download...'
-	if yt-dlp -x -f bestaudio -o "$output_directory" --embed-thumbnail --no-playlist "$@" >&- 2>&- ; then
+	if yt-dlp -x -f bestaudio -o "$output_directory" --embed-thumbnail --"${2:-no}"-playlist "$@" >&- 2>&- ; then
 		echo 'Download was successful, saved in:'
 		echo "$HOME/Downloads/Youtube_Download"
 		exit 0
@@ -103,9 +111,13 @@ function download_audio() {
 
 
 case "$1" in
+	-pa|--playlist-audio)
+		shift
+		download_audio "$1" "yes"
+
 	-a|--audio)
 		shift
-		download_audio "$1"
+		download_audio "$1" "no"
 		;;
 
 	-v|--version)
