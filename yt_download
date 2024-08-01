@@ -114,6 +114,7 @@ case "$1" in
 	-pa|--playlist-audio)
 		shift
 		download_audio "$1" "yes"
+	;;
 
 	-a|--audio)
 		shift
