@@ -1,43 +1,48 @@
-# Youtube Downloader
+**Youtube Audio Downloader 🎵**
+================================
 
+**Easy Audio Downloads from YouTube**
 
-## Goal of the project
- To allow easy install of audios on youtube through command line interface. Be it only one song or a playlist.
+This project allows you to easily download audio files from YouTube videos or playlists using a simple command-line interface.
 
+**Why This Project? 🤔**
+--------------------
 
- ## Motivation
- Everytime I wanted to download some song to listen to I would go to google and search for websites to do the conversion to me, but It isn't a good thing, since it can open some opportunities to end up getting a virus or have some data leak, that's why I searched for a safe way to do this, which is why led me to make this script. Feel free to use and modify.
+I was tired of searching for websites to convert YouTube videos to audio files, only to risk getting viruses or leaking personal data. That's why I created this script to provide a safe and easy way to download audio files from YouTube.
 
+**Compatibility 🎉**
+--------------------
 
- ## Compatibility
-  Tested in two shells: Bash and Zsh. Work like a charm.
+This script has been tested and works perfectly with both **Bash** and **Zsh** shells.
 
+**Requirements 📝**
+--------------------
 
-## Modules required
- - Ffmpeg & Ffprobe
- - Python3 and Mutagen module
- - yt-dlp
+To use this script, you'll need to have the following modules installed:
 
+* **Ffmpeg** and **Ffprobe**
+* **Python3** with the **Mutagen** module
+* **yt-dlp**
 
-## Instalation
- Git clone this repository and allow execution to the file `yt_download`  
- ```sh
-$ git clone git@github.com:jean0t/youtube-audio-downloader.git
-$ cd youtube-audio-downloader
-$ chmod +x yt_download
-```
- which is the script that you will run.  
-*OBS: see if the modules requirement are fulfilled*  
-*OBS²: add a symbolic link to your path, so you can call the script anytime you want*
+**Installation 📂**
+--------------------
 
-## Usage
+To install the script, follow these steps:
 
-To download the audio of a video:
+1. Clone the repository: `git clone git@github.com:jean0t/youtube-audio-downloader.git`
+2. Change into the repository directory: `cd youtube-audio-downloader`
+3. Give execution permissions to the script: `chmod +x yt_download`
+
+**Important:** Make sure you have all the required modules installed before running the script. You can also add a symbolic link to your system's PATH to run the script from anywhere.
+
+**Usage 📊**
+-------------
+
+To download the audio of a YouTube video, simply run:
 ```
 ./yt_download -a [youtube link]
 ```
-you can also use `-h` to access help for more information.
-
+Need more help? Use the `-h` option to access the help menu for more information.
 
 ## TO DO
 - [x]  Batch download from a playlist
