@@ -76,11 +76,6 @@ usage: ./yt_download [OPTIONS] LINK
 		-h|--help 		Gets info about the software
 
 		-v|--version		Gets the current version
-
-
-	REASON OF COMMON ISSUES:
-		- Absence of ffmpeg on the system
-		- Absence of the module mutagen
 EOF
 }
 
