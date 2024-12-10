@@ -46,4 +46,3 @@ Need more help? Use the `-h` option to access the help menu for more information
 
 ## TO DO
 - [x]  Batch download from a playlist
-- [ ]  Download video
