@@ -20,6 +20,7 @@ This script has been tested and works perfectly with both **Bash** and **Zsh** s
 
 To use this script, you'll need to have the following modules installed:
 
+* **gum**
 * **Ffmpeg** and **Ffprobe**
 * **Python3** with the **Mutagen** module
 * **yt-dlp**
