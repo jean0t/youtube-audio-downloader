@@ -1,0 +1,134 @@
+#!/usr/bin/env bash
+
+#============================================|
+#	Downloads youtube audio
+#	created by: Joao Mauricio
+#	github: github.com/jean0t
+#	version: 1.4
+#============================================|
+#	Changelog
+#
+#	1.0:
+#		- Downloads and extracts audios
+#		  from youtube videos
+#
+#	1.1:
+#		- Test if there are links
+#		  to download
+#
+#	1.2:
+#		- Test if the link passed is
+#		  a valid youtube link
+#
+#	1.3:
+#		- More organized code with
+#		  functions and a menu to
+#		  interact with the user.
+#
+#		- Now provides info about
+#		  the app with parameters
+#
+#		fixed:
+#			- download of multiple
+#			  songs in a playlist
+#			  without explicit allowing. 
+#
+#	1.4:
+#		- Added support to download audio
+#		  from a playlist.
+#
+#	1.5:
+#	  - Visual feedback to the download
+#	  - Testing dependencies to run the script
+#	  Changed:
+#	    - Output directory where the command
+#	      is called
+#
+#	    - Output directory isn't tested anymore
+#============================================|
+
+# VERIFICATIONS
+
+# Do not allow root to run
+[[ "$UID" -eq '0' ]] && { echo 'Do not run as root' ; exit 1 ; }
+
+# test if the necessary module exist
+[[ $( type -p yt-dlp ) ]] || { echo 'yt-dlp not found' ; exit 1 ; }
+
+# Test internet conection
+[[ $( ping -c1 8.8.8.8 ) ]] || { echo 'You need internet conection to run the script' ; exit 1 ; }
+
+# test if the dependencies are avaiable
+# mutagen
+[[ $( pip list | grep mutagen | tr -s " " | cut -d " " -f 1 ) = "mutagen" ]] || { echo 'python-mutagen was not found, please install the dependency' ; exit 1 ; }
+
+# ffmpeg
+[[ $(type -P ffmpeg) ]] || { echo 'ffmpeg was not found, please install the dependency' ; exit 1 ; }
+
+#============================================| GLOBAL VARIABLES
+
+version='1.5'
+output_directory="./%(title)s.%(ext)s"
+
+#============================================| FUNCTIONS
+
+function version() {
+	echo "version ${version}"
+}
+
+function help() {
+	cat <<'EOF'
+usage: ./yt_download [OPTIONS] LINK
+
+	OPTIONS:
+		-a|--audio		Downloads the audio of the video
+
+		-pa|--playlist-audio	Downloads the audio of all videos in a playlist
+
+		-h|--help 		Gets info about the software
+
+		-v|--version		Gets the current version
+EOF
+}
+
+# accepts 2 parameters, first is the link, second is the confirmation if it will 
+# download the playlist or not
+function download_audio() {
+
+	# test if there are parameters
+	[[ $# -eq 0 ]] && { echo 'you need to pass an youtube link to download' ; exit 1 ; }
+
+	# test if the link is valid
+	local youtube_regex='^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+$'
+	[[ $1 =~ $youtube_regex ]] || { echo 'It is not a valid link, please provide a https://youtube.com/...' ; exit 1 ; }
+
+  local title="Downloading audio..."
+  [[ "$2" = "yes" ]] && title="Downloading playlist..."
+
+	gum spin --spinner dot --title "${title}" -- yt-dlp -x -f bestaudio -o "$output_directory" --embed-thumbnail --"${2}"-playlist "$1" && { echo 'Download completed' ; exit 0 ; } || { echo 'Error' ; exit 1 ; }
+
+}
+
+#============================================|START THE PROGRAM
+
+
+case "$1" in
+	-pa|--playlist-audio)
+		shift
+		download_audio "$1" "yes"
+	;;
+
+	-a|--audio)
+		shift
+		download_audio "$1" "no"
+		;;
+
+	-v|--version)
+		version
+		;;
+
+	-h|--help|*)
+		help
+		;;
+
+esac
