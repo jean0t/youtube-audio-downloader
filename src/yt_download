@@ -4,7 +4,7 @@
 #	Downloads youtube audio
 #	created by: Joao Mauricio
 #	github: github.com/jean0t
-#	version: 1.5
+#	version: 1.6
 #============================================|
 #	Changelog
 #
@@ -45,6 +45,9 @@
 #	      is called
 #
 #	    - Output directory isn't tested anymore
+#	
+#	1.6:
+#	  - Optimization for verifications steps
 #============================================|
 
 # VERIFICATIONS
@@ -60,14 +63,14 @@
 
 # test if the dependencies are avaiable
 # mutagen
-[[ $( pip list | grep mutagen | tr -s " " | cut -d " " -f 1 ) = "mutagen" ]] || { echo 'python-mutagen was not found, please install the dependency' ; exit 1 ; }
+( pip freeze | grep -q ^mutagen ) || { echo 'python-mutagen was not found, please install the dependency' ; exit 1 ; }
 
 # ffmpeg
 [[ $(type -P ffmpeg) ]] || { echo 'ffmpeg was not found, please install the dependency' ; exit 1 ; }
 
 #============================================| GLOBAL VARIABLES
 
-version='1.5'
+version='1.6'
 output_directory="./%(title)s.%(ext)s"
 
 #============================================| FUNCTIONS
