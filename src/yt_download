@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 #============================================|
 #	Downloads youtube audio
@@ -48,38 +48,38 @@
 #	
 #	1.6:
 #	  - Optimization for verifications steps
+#
+#	1.7:
+#	 - POSIX compliant
 #============================================|
 
 # VERIFICATIONS
 
 # Do not allow root to run
-[[ "$UID" -eq '0' ]] && { echo 'Do not run as root' ; exit 1 ; }
+[ "$( id -u )" -eq '0' ] && { echo 'Do not run as root' ; exit 1 ; }
 
 # test if the necessary module exist
-[[ $( type -p yt-dlp ) ]] || { echo 'yt-dlp not found' ; exit 1 ; }
-
-# Test internet conection
-[[ $( ping -c1 8.8.8.8 ) ]] || { echo 'You need internet conection to run the script' ; exit 1 ; }
+command -v yt-dlp 1>/dev/null 2>&1 || { echo 'yt-dlp not found' ; exit 1 ; }
 
 # test if the dependencies are avaiable
 # mutagen
-( pip freeze | grep -q ^mutagen ) || { echo 'python-mutagen was not found, please install the dependency' ; exit 1 ; }
+pip freeze | grep -q ^mutagen || { echo 'python-mutagen was not found, please install the dependency' ; exit 1 ; }
 
 # ffmpeg
-[[ $(type -P ffmpeg) ]] || { echo 'ffmpeg was not found, please install the dependency' ; exit 1 ; }
+command -v ffmpeg 1>/dev/null 2>&1 || { echo 'ffmpeg was not found, please install the dependency' ; exit 1 ; }
 
 #============================================| GLOBAL VARIABLES
 
-version='1.6'
+version='1.7'
 output_directory="./%(title)s.%(ext)s"
 
 #============================================| FUNCTIONS
 
-function version() {
-	echo "version ${version}"
+version() {
+	echo "yt_download script - version ${version} - author: Jean0t"
 }
 
-function help() {
+help() {
 	cat <<'EOF'
 usage: ./yt_download [OPTIONS] LINK
 
@@ -96,19 +96,29 @@ EOF
 
 # accepts 2 parameters, first is the link, second is the confirmation if it will 
 # download the playlist or not
-function download_audio() {
+download_audio() {
 
 	# test if there are parameters
-	[[ $# -eq 0 ]] && { echo 'you need to pass an youtube link to download' ; exit 1 ; }
+	[ ${#} -eq 0 ] && { echo '[*] you need to pass an youtube link to download' ; exit 1 ; }
 
 	# test if the link is valid
-	local youtube_regex='^(https?\:\/\/)?(www\.youtube\.com|youtu\.?be)\/.+$'
-	[[ $1 =~ $youtube_regex ]] || { echo 'It is not a valid link, please provide a https://youtube.com/...' ; exit 1 ; }
+	youtube_regex='^(https?://)?(www\.youtube\.com|youtu\.?be)/.+$'
+	echo "$1" | grep -Eq "$youtube_regex" || { echo '[!] It is not a valid link, please provide a https://youtube.com/...' ; exit 1 ; }
 
-  local title="Downloading audio..."
-  [[ "$2" = "yes" ]] && title="Downloading playlist..."
+    title="Downloading audio..."
+    [ "$2" = "yes" ] && title="Downloading playlist..."
 
-	gum spin --spinner dot --title "${title}" -- yt-dlp -x -f bestaudio -o "$output_directory" --embed-thumbnail --"${2}"-playlist "$1" && { echo 'Download completed' ; exit 0 ; } || { echo 'Error' ; exit 1 ; }
+    
+    # this part makes the script dependent of gum
+    # but I liike the visuals :P
+    if gum spin --spinner dot --title "${title}" -- yt-dlp -x -f bestaudio -o "$output_directory" --embed-thumbnail --"${2}"-playlist "$1"
+    then
+        echo '[*] Download completed'
+        exit 0
+    else
+        echo '[!] Error when downloading'
+        exit 1
+    fi
 
 }
 
